@@ -10,15 +10,29 @@ import { useForm } from 'react-hook-form'
 import Typography from '@mui/material/Typography'
 import TrungQuanDevIcon from '../assets/trungquandev-logo.png'
 import authorizedAxiosInstance from '~/utils/authorizedAxios'
-import { toast } from 'react-toastify'
 import { API_ROOT } from '~/utils/constants'
+import { useNavigate } from 'react-router-dom'
 
 function Login() {
   const { register, handleSubmit, formState: { errors } } = useForm()
+  const navigate = useNavigate()
 
   const submitLogIn = async (data) => {
     const res = await authorizedAxiosInstance.post(`${API_ROOT}/v1/users/login`, data)
-    toast.success(res.data?.message)
+
+    // step 1: Get user info
+    const userInfo = {
+      id: res.data.id,
+      email: res.data.email
+    }
+
+    // step 2 Lưu access token, refresh token và thông tin user vào local storage
+    localStorage.setItem('accessToken', res.data.accessToken)
+    localStorage.setItem('refreshToken', res.data.refreshToken)
+    localStorage.setItem('userInfo', JSON.stringify(userInfo))
+
+    // step 3: Navigate to home page
+    navigate('/dashboard')
   }
 
   return (

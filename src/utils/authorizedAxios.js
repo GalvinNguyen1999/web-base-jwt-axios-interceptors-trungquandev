@@ -9,13 +9,22 @@ let authorizedAxiosInstance = axios.create()
 authorizedAxiosInstance.defaults.timeout = 10 * 60 * 1000 // 10 phút
 
 // Cho phép gửi cookie kèm theo request phục vụ trường hợp lưu access token và refresh token trong httpOnly cookie
-// authorizedAxiosInstance.defaults.withCredentials = true
+authorizedAxiosInstance.defaults.withCredentials = true
 
 // Config interceptor cho axios giúp xử lý ở giữa mỗi request và response
 // Add a request interceptor
 authorizedAxiosInstance.interceptors.request.use(
   (config) => {
     // Do something before request is sent
+
+    // Lấy access token từ local storage
+    const accessToken = localStorage.getItem('accessToken')
+    if (accessToken) {
+      // Lưu ý: Phải có 'Bearer ' (có khoảng trắng) trước access token vì theo chuẩn Oauth2 trong việc xác định loại token đang sử dụng
+      // Bearer là định nghĩa loại token dành cho việc xác thực và uỷ quyền, tham khảo các loại token khác như: Basic Token, Digest Token, OAuth token ...
+      config.headers.Authorization = `Bearer ${accessToken}`
+    }
+
     return config
   },
   (error) => {
