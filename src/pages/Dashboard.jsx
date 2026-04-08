@@ -2,14 +2,17 @@
 import { useEffect, useState } from 'react'
 import Alert from '@mui/material/Alert'
 import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import CircularProgress from '@mui/material/CircularProgress'
 import Divider from '@mui/material/Divider'
 import authorizedAxiosInstance from '~/utils/authorizedAxios'
 import { API_ROOT } from '~/utils/constants'
+import { useNavigate } from 'react-router-dom'
 
 function Dashboard() {
   const [user, setUser] = useState(null)
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -18,6 +21,22 @@ function Dashboard() {
     }
     fetchData()
   }, [])
+
+  const handleLogout = async () => {
+    // Trường họp 01: Dùng localStorage > chỉ xoá thông tin user trong localStorage phía FE
+    localStorage.removeItem('accessToken')
+    localStorage.removeItem('refreshToken')
+    localStorage.removeItem('userInfo')
+
+    // Trường hợp 02: Dùng Http only Cookies > Gọi API để xử lý remove cookies
+    await authorizedAxiosInstance.delete(`${API_ROOT}/v1/users/logout`)
+
+    // Xoá thông tin user
+    setUser(null)
+
+    // Điều hướng về trang login
+    navigate('/login')
+  }
 
   if (!user) {
     return (
@@ -50,7 +69,12 @@ function Dashboard() {
         &nbsp; đăng nhập thành công thì mới cho truy cập vào.
       </Alert>
 
+      <Button variant="contained" color="primary" onClick={handleLogout} size='small' sx={{ width: 'fit-content', alignSelf: 'flex-end' }}>
+        Logout
+      </Button>
+
       <Divider sx={{ my: 2 }} />
+
     </Box>
   )
 }
