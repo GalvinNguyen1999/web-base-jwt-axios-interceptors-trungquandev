@@ -18,10 +18,56 @@ function Dashboard() {
   useEffect(() => {
     const fetchData = async () => {
       const res = await authorizedAxiosInstance.get(`${API_ROOT}/v1/dashboards/access`)
+      // await authorizedAxiosInstance.get(`${API_ROOT}/v1/dashboards/access`)
+      // await authorizedAxiosInstance.get(`${API_ROOT}/v1/dashboards/access`)
+      // await authorizedAxiosInstance.get(`${API_ROOT}/v1/dashboards/access`)
+      // await authorizedAxiosInstance.get(`${API_ROOT}/v1/dashboards/access`)
+      // await authorizedAxiosInstance.get(`${API_ROOT}/v1/dashboards/access`)
       setUser(res.data)
     }
     fetchData()
   }, [])
+
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     return await authorizedAxiosInstance.get(`${API_ROOT}/v1/dashboards/access`)
+  //   }
+
+  //   fetchData()
+  // }, [])
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     return await authorizedAxiosInstance.get(`${API_ROOT}/v1/dashboards/access`)
+  //   }
+
+  //   fetchData()
+  // }, [])
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     return await authorizedAxiosInstance.get(`${API_ROOT}/v1/dashboards/access`)
+  //   }
+
+  //   fetchData()
+  // }, [])
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     return await authorizedAxiosInstance.get(`${API_ROOT}/v1/dashboards/access`)
+  //   }
+
+  //   fetchData()
+  // }, [])
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     return await authorizedAxiosInstance.get(`${API_ROOT}/v1/dashboards/access`)
+  //   }
+
+  //   fetchData()
+  // }, [])
 
   const handleLogout = async () => {
     await handleLogoutApi()
