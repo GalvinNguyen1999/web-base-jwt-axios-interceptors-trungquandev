@@ -2,6 +2,7 @@
 
 import axios from 'axios'
 import { toast } from 'react-toastify'
+import { handleLogoutApi, handleRefreshTokenApi } from '~/apis'
 
 let authorizedAxiosInstance = axios.create()
 
@@ -43,6 +44,44 @@ authorizedAxiosInstance.interceptors.response.use(
   (error) => {
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
+
+    /* Khu vực quan trọng: xử lý refresh token tự động */
+    // Xử lý logout khi status là 401 Unauthorized
+    if (error.response.status === 401) {
+      handleLogoutApi().then(() => {
+        location.href = '/login'
+      })
+    }
+
+    // Nếu như nhận mã 410 từ BE. thì gọi api refresh token để làm mới lại accessToken
+    // đầu tiên lấy được các request api đang bị lỗi thông qua error.config
+    const originalRequest = error.config
+    console.log('originalRequest', originalRequest)
+    if (error.response?.status === 410 && !originalRequest._retry) {
+      originalRequest._retry = true
+
+      // lấy refresh token từ localStorage (cho trường hợp lưu ở local storage)
+      const refreshToken = localStorage.getItem('refreshToken')
+      // Gọi API refresh token
+      return handleRefreshTokenApi(refreshToken)
+        .then((res) => {
+          // lấy và gán lại access token vào localStorage (cho trường hợp lưu ở local storage)
+          const { accessToken } = res.data;
+          localStorage.setItem('accessToken', accessToken)
+          authorizedAxiosInstance.defaults.headers.Authorization = `Bearer ${accessToken}`
+
+          // gọi lại request ban đầu đang bị lỗi
+          return authorizedAxiosInstance(originalRequest)
+        })
+        .catch((_err) => {
+          // nếu refresh token thất bại thì logout
+          handleLogoutApi().then(() => {
+            location.href = '/login'
+          })
+
+          return Promise.reject(error)
+        })
+    }
 
     // Ngoại trừ lỗi 410: Gone vì phục vụ cho việc refresh token
     if (error.response.status !== 410) {

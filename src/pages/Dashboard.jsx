@@ -8,6 +8,7 @@ import CircularProgress from '@mui/material/CircularProgress'
 import Divider from '@mui/material/Divider'
 import authorizedAxiosInstance from '~/utils/authorizedAxios'
 import { API_ROOT } from '~/utils/constants'
+import { handleLogoutApi } from '~/apis'  
 import { useNavigate } from 'react-router-dom'
 
 function Dashboard() {
@@ -23,18 +24,8 @@ function Dashboard() {
   }, [])
 
   const handleLogout = async () => {
-    // Trường họp 01: Dùng localStorage > chỉ xoá thông tin user trong localStorage phía FE
-    localStorage.removeItem('accessToken')
-    localStorage.removeItem('refreshToken')
-    localStorage.removeItem('userInfo')
+    await handleLogoutApi()
 
-    // Trường hợp 02: Dùng Http only Cookies > Gọi API để xử lý remove cookies
-    await authorizedAxiosInstance.delete(`${API_ROOT}/v1/users/logout`)
-
-    // Xoá thông tin user
-    setUser(null)
-
-    // Điều hướng về trang login
     navigate('/login')
   }
 
