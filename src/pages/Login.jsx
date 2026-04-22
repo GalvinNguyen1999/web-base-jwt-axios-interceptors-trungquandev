@@ -23,7 +23,8 @@ function Login() {
     // step 1: Get user info
     const userInfo = {
       id: res.data.id,
-      email: res.data.email
+      email: res.data.email,
+      role: res.data.role
     }
 
     // step 2 Lưu access token, refresh token và thông tin user vào local storage
@@ -42,7 +43,7 @@ function Login() {
       minHeight: '100vh',
       alignItems: 'center',
       justifyContent: 'flex-start',
-      background: 'url("src/assets/trungquandev-bg-img.jpeg")',
+      background: 'url("src/assets/trungquandev-bg-img.jpg")',
       backgroundRepeat: 'no-repeat',
       backgroundSize: 'cover',
       backgroundPosition: 'center',
